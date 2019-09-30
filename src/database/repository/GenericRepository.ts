@@ -25,6 +25,7 @@ class GenericRepository {
 
   async update(table: string, where: object, update: object) {
     const repository = connection.getRepository(table);
+    console.log(table, where, update);
     await repository.update(where, update);
   }
 }

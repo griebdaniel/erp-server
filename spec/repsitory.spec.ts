@@ -51,9 +51,8 @@ describe('server test', function () {
         }
       });
     });
-    
-    console.log(response[0].necessary);
-    
+
+    console.log(JSON.stringify(response, null, 2));
     expect(Lodash.isArray(response)).toBe(true);
   });
 

@@ -19,18 +19,31 @@ app.post('/find', async (req, res) => {
 });
 
 app.post('/update', async (req, res) => {
-  await genericRepository.update(req.body.table, req.body.where, req.body.update);
-  res.send({ success: true });
+  try {
+    await genericRepository.update(req.body.table, req.body.where, req.body.update);
+    res.send({ success: true });
+  } catch (e) {
+    res.send({ success: false });
+  }
 });
 
 app.post('/insert', async (req, res) => {
-  await genericRepository.insert(req.body.table, req.body.entities);
-  res.send({ success: true });
+  try {
+    await genericRepository.insert(req.body.table, req.body.entities);
+    res.send({ success: true });
+  } catch (e) {
+    console.log(e);
+    res.send({ success: false })
+  }
 });
 
 app.post('/delete', async (req, res) => {
-  await genericRepository.delete(req.body.table, req.body.entities);
-  res.send({ success: true });
+  try {
+    await genericRepository.delete(req.body.table, req.body.entities);
+    res.send({ success: true });
+  } catch {
+    res.send({ success: false });
+  }
 });
 
 let server: Server;
