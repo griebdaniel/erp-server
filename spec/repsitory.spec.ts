@@ -1,31 +1,42 @@
 import request from 'request';
 
 import { start, stop } from '../src/server';
-import { initializeConnection } from '../src/database/ConnectionProvider';
-import { genericRepository } from '../src/database/repository/GenericRepository';
+import { initializeConnection } from '../src/repository/ConnectionProvider';
+import { genericDao } from '../src/repository/Daos/GenericDao';
 import Lodash from 'lodash';
 
 describe('repository test', () => {
-  beforeAll(async() => {
+  beforeAll(async () => {
     await initializeConnection();
     console.log('connection initialized')
   });
 
   it('find', async () => {
-    const supplies = await genericRepository.find('supply');
+    const supplies = await genericDao.find('supply');
   });
-  
+
   it('delete', async () => {
-    await genericRepository.delete('supply', { name: 'supply2' });
-  })
+    await genericDao.delete('supply', { name: 'supply2' });
+    // const products = await genericRepository.find('product');
+    // console.log(products);
+    // await genericRepository.delete('product',
+    //   {
+    //     name: 'product4',
+    //     necessary: [{ supply: 'supply1', quantity: 6 }]
+    //   });
+    // await genericRepository.delete('product', products);
+  });
 
   it('insert', async () => {
-    await genericRepository.insert('supply', { name: 'supply2', quantity: 4 });
+    // await genericRepository.insert('supply', { name: 'supply2', quantity: 4 });
+    await genericDao.insert('product', { name: 'product2', necessary: [{ supply: 'supply1', product: 'product2', quantity: 10 }] })
   });
 
-  it('update', async () => {
-    await genericRepository.update('supply', { name: 'supply3' }, { quantity: 3 });
+  fit('update', async () => {
+    await genericDao.update('supply_order', { name: 'so1', deadLine: Date.now() }, { name: 'so2' });
   });
+
+
 })
 
 describe('server test', function () {
@@ -38,7 +49,7 @@ describe('server test', function () {
     await stop();
   });
 
-  fit('find', async () => {
+  it('find', async () => {
     const response = await new Promise<any>((resolve, reject) => {
       request.post({
         url: 'http://localhost:3200/find',
@@ -69,7 +80,7 @@ describe('server test', function () {
         }
       });
     });
-    
+
     expect(response).toBe('updated successfully');
   });
 
@@ -78,7 +89,7 @@ describe('server test', function () {
     const response = await new Promise<string>((resolve, reject) => {
       request.post({
         url: 'http://localhost:3200/insert',
-        json: { table: 'supply', entities: { name: 'supply4',  quantity: 4 } }
+        json: { table: 'supply', entities: { name: 'supply4', quantity: 4 } }
       }, (error, response, body) => {
         if (error) {
           reject(body);
@@ -87,7 +98,7 @@ describe('server test', function () {
         }
       });
     });
-    
+
     expect(response).toBe('inserted successfully');
   });
 
@@ -104,7 +115,7 @@ describe('server test', function () {
         }
       });
     });
-    
+
     expect(response.success).toBe(true);
   });
 });

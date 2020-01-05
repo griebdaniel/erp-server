@@ -1,12 +1,11 @@
-import { Entity, ManyToMany, PrimaryColumn, JoinTable, OneToMany } from 'typeorm';
-import { Supply } from './Supply';
-import { SupplyNecessary } from './SupplyNecessary';
+import { Entity, PrimaryColumn, OneToMany } from 'typeorm';
+import { Phase } from './Phase';
 
 @Entity()
 export class Product {
   @PrimaryColumn()
   name: string;
 
-  @OneToMany(type => SupplyNecessary, supplyNecessary => supplyNecessary.product, { eager: true })
-  necessary: SupplyNecessary[];
+  @OneToMany(type => Phase, phase => phase.product, { eager: true, cascade: ['insert', 'remove', 'update'] })
+  phases: Phase[];
 }
