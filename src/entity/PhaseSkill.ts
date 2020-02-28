@@ -7,10 +7,10 @@ export class PhaseSkill {
   @PrimaryColumn('string')
   @ManyToOne(type => Phase, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'phase' })
-  phase: Phase;
+  phase: string;
 
   @PrimaryColumn('string')
   @ManyToOne(type => Skill, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn({ name: 'skill' })
-  skill: Skill;
+  skill: string;
 }

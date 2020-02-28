@@ -6,10 +6,10 @@ export class Shift {
   name: string;
 
   @Column('time')
-  start: Date;
+  start: string;
 
   @Column('time')
-  end: Date;
+  end: string;
 
   @Column('time')
   breakStart: string;

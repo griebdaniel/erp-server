@@ -6,6 +6,9 @@ import cors from 'cors';
 import bodyParser = require('body-parser');
 import { Server } from 'http';
 
+import { schedule } from './scheduler';
+import { getClientTypes } from './repository/client-types';
+
 const app = express();
 const port = 3200;
 
@@ -13,8 +16,13 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/find', async (req, res) => {
-  const table = await genericDao.find(req.body.table);
-  res.send(table);
+  const data = await genericDao.find(req.body.table);
+  res.send(data);
+});
+
+app.post('/clientTypes', async (req, res) => {
+  const data = await getClientTypes(req.body.table);
+  res.send(data);
 });
 
 app.post('/update', async (req, res) => {
@@ -46,12 +54,16 @@ app.post('/delete', async (req, res) => {
 });
 
 app.post('/modify', async (req, res) => {
-  try {
-    await genericDao.modify(req.body.table, req.body.modification);
+  genericDao.modify(req.body.table, req.body.modification).then(r => {
     res.send({ success: true });
-  } catch {
-    res.send({ success: false });
-  }
+  }).catch(e => {
+    console.log(e);
+    res.send({ success: false });``
+  });
+});
+
+app.post('/schedule', async (req, res) => {
+  res.send(await schedule());
 });
 
 let server: Server;

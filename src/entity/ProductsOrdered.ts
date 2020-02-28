@@ -5,15 +5,15 @@ import { ProductOrder } from './ProductOrder';
 @Entity()
 export class ProductsOrdered {
   @PrimaryColumn('string')
-  @ManyToOne(type => Product, { eager: true, onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @ManyToOne(type => Product, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'product' })
-  product: Product;
+  product: string;
 
   @PrimaryColumn('string')
   @ManyToOne(type => ProductOrder, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'productOrder' })
-  productOrder: ProductOrder;
+  productOrder: string;
 
   @Column()
-  quantity: number;
+  count: number;
 }

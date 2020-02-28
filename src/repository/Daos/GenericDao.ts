@@ -2,9 +2,7 @@ import { connection } from '../ConnectionProvider'
 import { TableModification } from '../Types';
 import Lodash from 'lodash';
 
-const modify = async (table: string, tableModification: TableModification) => {
-  console.log(table, tableModification);
-
+const modify = (table: string, tableModification: TableModification) => {
   const modification = tableModification.modification;
 
   Lodash.forOwn(modification.row, (value, key) => {
@@ -13,40 +11,47 @@ const modify = async (table: string, tableModification: TableModification) => {
     }
   });
 
+  let res: any;
+
   switch (tableModification.type) {
     case 'insert':
-      return genericDao.insert(table, modification);
+      res = genericDao.insert(table, modification);
+      break;
     case 'update':
-      return genericDao.update(table, modification.row, { [modification.column]: modification.value });
+      res = genericDao.update(table, modification.row, { [modification.column]: modification.value });
+      break;
     case 'delete':
-      return genericDao.delete(table, modification);
+      res = genericDao.delete(table, modification);
+      break;
     default:
       throw ('modification type not supported');
   }
+
+  return res;
 }
 
 class GenericDAO {
-  async find(table: string) {
+  find(table: string) {
     const repository = connection.getRepository(table);
-    return await repository.find();
+    return repository.find() as any;
   }
 
-  async insert(table: string, entities: object | object[]) {
+  insert(table: string, entities: object | object[]) {
     const repository = connection.getRepository(table);
-    return await repository.insert(entities);
+    return repository.insert(entities);
   }
 
-  async delete(table: string, entities: object | object[]) {
+  delete(table: string, entities: object | object[]) {
     const repository = connection.getRepository(table);
-    return await repository.delete(entities);
+    return repository.delete(entities);
   }
 
-  async update(table: string, where: object, update: object) {
+  update(table: string, where: object, update: object) {
     const repository = connection.getRepository(table);
-    return await repository.update(where, update);
+    return repository.update(where, update);
   }
 
-  async modify(table: string, tableModification: any): Promise<any> {
+  modify(table: string, tableModification: any): Promise<any> {
     const modification = tableModification.modification;
     const repository = connection.getRepository(table);
 
@@ -69,14 +74,12 @@ class GenericDAO {
         }
 
         if (modification.value.type !== undefined) {
-          this.modify(relation.inverseEntityMetadata.tableName, modification.value);
+          return this.modify(relation.inverseEntityMetadata.tableName, modification.value);
         }
-
-        return;
       }
     }
 
-    modify(table, tableModification);
+    return modify(table, tableModification);
   }
 
 }

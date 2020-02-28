@@ -9,22 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var typeorm_1 = require("typeorm");
-var Supply = /** @class */ (function () {
-    function Supply() {
-    }
-    __decorate([
-        typeorm_1.PrimaryColumn(),
-        __metadata("design:type", String)
-    ], Supply.prototype, "name", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Supply.prototype, "quantity", void 0);
-    Supply = __decorate([
-        typeorm_1.Entity()
-    ], Supply);
-    return Supply;
-}());
+const typeorm_1 = require("typeorm");
+let Supply = class Supply {
+};
+__decorate([
+    typeorm_1.PrimaryColumn(),
+    __metadata("design:type", String)
+], Supply.prototype, "name", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Supply.prototype, "quantity", void 0);
+Supply = __decorate([
+    typeorm_1.Entity()
+], Supply);
 exports.Supply = Supply;
 //# sourceMappingURL=Supply.js.map

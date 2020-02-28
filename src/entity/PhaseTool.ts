@@ -8,12 +8,12 @@ export class PhaseTool {
   @PrimaryColumn('string')
   @ManyToOne(type => Phase, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'phase' })
-  phase: Phase;
+  phase: string;
 
   @PrimaryColumn('string')
   @ManyToOne(type => Tool, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn({ name: 'tool' })
-  tool: Tool;
+  tool: string;
 
   @Column()
   count: number;

@@ -10,9 +10,9 @@ export class ProductOrder {
   @Column()
   deadLine: Date;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   delivered: boolean;
 
-  @OneToMany(type => ProductsOrdered, productOrderd => productOrderd.productOrder, { eager: true, cascade: true })
+  @OneToMany(type => ProductsOrdered, productOrderd => productOrderd.productOrder, { eager: true })
   products: ProductsOrdered[];
 }

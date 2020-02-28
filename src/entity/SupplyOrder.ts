@@ -9,9 +9,9 @@ export class SupplyOrder {
   @Column()
   deadLine: Date;
 
-  @Column({ nullable: true })
+  @Column()
   arrived: boolean;
 
-  @OneToMany(type => SuppliesOrdered, supplyOrderd => supplyOrderd.supplyOrder, { eager: true, cascade: true })
+  @OneToMany(type => SuppliesOrdered, supplyOrderd => supplyOrderd.supplyOrder, { eager: true })
   supplies: SuppliesOrdered[];
 }

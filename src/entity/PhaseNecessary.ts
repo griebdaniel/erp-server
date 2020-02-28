@@ -1,19 +1,20 @@
-import { Entity, ManyToOne, Column, PrimaryColumn, JoinColumn } from 'typeorm';
-import { Supply } from "./Supply";
+import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
+
 import { Phase } from './Phase';
+import { Supply } from './Supply';
 
 @Entity()
 export class PhaseNecessary {
   @PrimaryColumn('string')
-  @ManyToOne(type => Supply, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-  @JoinColumn({ name: 'supply' })
-  supply: Supply;
+  @ManyToOne(type => Phase, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn({ name: 'phase' })
+  phase: string;
 
   @PrimaryColumn('string')
-  @ManyToOne(type => Phase, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'phase' })
-  phase: Phase;
+  @ManyToOne(type => Supply, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  @JoinColumn({ name: 'supply' })
+  supply: string;
 
-  @Column()
+  @Column({ nullable: true })
   quantity: number;
 }

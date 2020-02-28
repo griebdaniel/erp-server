@@ -9,23 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var typeorm_1 = require("typeorm");
-var Necessary_1 = require("./Necessary");
-var Product = /** @class */ (function () {
-    function Product() {
-    }
-    __decorate([
-        typeorm_1.PrimaryColumn(),
-        __metadata("design:type", String)
-    ], Product.prototype, "name", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return Necessary_1.Necessary; }, function (necessary) { return necessary.product; }, { eager: true }),
-        __metadata("design:type", Array)
-    ], Product.prototype, "necessary", void 0);
-    Product = __decorate([
-        typeorm_1.Entity()
-    ], Product);
-    return Product;
-}());
+const typeorm_1 = require("typeorm");
+const Phase_1 = require("./Phase");
+let Product = class Product {
+};
+__decorate([
+    typeorm_1.PrimaryColumn(),
+    __metadata("design:type", String)
+], Product.prototype, "name", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => Phase_1.Phase, phase => phase.product, { eager: true }),
+    __metadata("design:type", Array)
+], Product.prototype, "phases", void 0);
+Product = __decorate([
+    typeorm_1.Entity()
+], Product);
 exports.Product = Product;
 //# sourceMappingURL=Product.js.map

@@ -2,31 +2,34 @@ import { Entity, PrimaryColumn, OneToMany, Column, ManyToOne, JoinColumn } from 
 
 import { PhaseSkill} from './PhaseSkill';
 import { PhaseTool } from './PhaseTool';
-import { PhaseNecessary } from './PhaseNecessary';
 import { Product } from './Product';
-import { ParentPhase } from './ParentPhase';
+import { PhaseDependency } from './PhaseDependency';
+import { PhaseNecessary } from './PhaseNecessary';
 
 @Entity()
 export class Phase {
   @PrimaryColumn()
   name: string;
 
+  @Column('time')
+  time: string;
+
   @Column()
-  time: number;
+  count: number;
 
-  @OneToMany(type => PhaseSkill, phaseSkill => phaseSkill.phase, { eager: true, cascade: ['insert', 'remove', 'update'] })
-  skills: PhaseSkill;
+  @OneToMany(type => PhaseSkill, phaseSkill => phaseSkill.phase, { eager: true})
+  skills: PhaseSkill[];
 
-  @OneToMany(type => PhaseTool, phaseTool => phaseTool.phase, { eager: true, cascade: ['insert', 'remove', 'update'] })
+  @OneToMany(type => PhaseTool, phaseTool => phaseTool.phase, { eager: true })
   tools: PhaseTool[];
 
-  @OneToMany(type => PhaseNecessary, phaseNecessary => phaseNecessary.phase, { eager: true, cascade: ['insert', 'remove', 'update'] })
+  @OneToMany(type => PhaseDependency, phaseDependency => phaseDependency.phase, { eager: true })
+  phaseDependencies: PhaseDependency[];
+
+  @OneToMany(type => PhaseNecessary, phaseNecessary => phaseNecessary.phase, { eager: true })
   necessary: PhaseNecessary[];
 
-  @OneToMany(type => ParentPhase, parentPhase => parentPhase.phase, { eager: true, cascade: ['insert', 'remove', 'update'] })
-  parentPhases: ParentPhase[];
-
-  @ManyToOne(type => Product)
+  @ManyToOne(type => Product, { nullable: false, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'product' })
-  product: Product;
+  product: string;
 }

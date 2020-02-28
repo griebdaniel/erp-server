@@ -7,7 +7,7 @@ export class FreeDay {
   @PrimaryColumn('string')
   @ManyToOne(type => Employee, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinColumn({ name: 'employee' })
-  employee: Employee;
+  employee: string;
 
   @PrimaryColumn()
   startDate: Date;
