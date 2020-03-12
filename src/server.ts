@@ -17,6 +17,7 @@ app.use(cors());
 
 app.post('/find', async (req, res) => {
   const data = await genericDao.find(req.body.table);
+  console.log(data);
   res.send(data);
 });
 

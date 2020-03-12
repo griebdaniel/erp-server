@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(cors_1.default());
 app.post('/find', async (req, res) => {
     const data = await GenericDao_1.genericDao.find(req.body.table);
+    console.log(data);
     res.send(data);
 });
 app.post('/clientTypes', async (req, res) => {
@@ -54,7 +55,7 @@ app.post('/modify', async (req, res) => {
     GenericDao_1.genericDao.modify(req.body.table, req.body.modification).then(r => {
         res.send({ success: true });
     }).catch(e => {
-        // console.log(e);
+        console.log(e);
         res.send({ success: false });
         ``;
     });

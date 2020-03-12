@@ -10,7 +10,7 @@ import { Product } from './entity/Product';
 import { Skill } from './entity/Skill';
 
 import { genericDao } from './repository/Daos/GenericDao';
-import e from 'express';
+
 
 class Phase extends Phase2 {
   remaining: number;
@@ -147,9 +147,6 @@ const getAssignments = (
         const employeeAvailable = employees !== undefined;
 
         if (timeAvailable && toolAvailable && phaseAvailable && employeeAvailable) {
-          if (phase.name === 'paint') {
-            const a = 0;
-          }
           activeAssignments.push({ phase: phase.name, time: currentTime, employees: employees.map(employee => employee.name) });
 
           lodash.pullAllWith(unassignedEmployees, employees, (a, b) => a.name === b.name);

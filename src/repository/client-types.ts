@@ -1,7 +1,7 @@
 import { connection } from './ConnectionProvider';
 import { genericDao } from './Daos/GenericDao';
 import lodash from 'lodash';
-import { AdvancedConsoleLogger } from 'typeorm';
+import { AdvancedConsoleLogger, Repository } from 'typeorm';
 
 class ClientType {
   name: string;
@@ -10,7 +10,13 @@ class ClientType {
 }
 
 export const getClientTypes = async (table: string) => {
-  const repository = connection.getRepository(table);
+  let repository: Repository<unknown>;
+  
+  try {
+    repository = connection.getRepository(table);
+  } catch(e) {
+    return undefined;
+  }
 
   const metadata = repository.metadata;
   const types: ClientType[] = [];
@@ -36,4 +42,45 @@ export const getClientTypes = async (table: string) => {
 
   return types;
 }
+
+// const scheduleType = [
+//   {
+//     name: 'date',
+//     type: 'date'
+//   },
+//   {
+//     name: 'schedule',
+//     type: 'table',
+//     options: {
+//       columnTypes: [
+//         {
+//           name: 'shift',
+//           type: 'string',
+//         }
+//       ]
+//     }
+//   }
+// ]
+
+export class ScheduleForDay {
+  date: Date;
+  schedule: ScheduleForShift[];
+}
+
+export class ScheduleForShift {
+  shift: string;
+  schedule: ScheduleForEmployee[]
+}
+
+export class ScheduleForEmployee {
+  employee: string;
+  schedule: Schedule[];
+}
+
+export class Schedule {
+  phase: string;
+  start: string;
+  end: string;
+}
+
 

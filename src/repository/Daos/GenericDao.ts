@@ -2,6 +2,8 @@ import { connection } from '../ConnectionProvider'
 import { TableModification } from '../Types';
 import Lodash from 'lodash';
 
+import { schedule } from '../../scheduler';
+
 const modify = (table: string, tableModification: TableModification) => {
   const modification = tableModification.modification;
 
@@ -32,6 +34,9 @@ const modify = (table: string, tableModification: TableModification) => {
 
 class GenericDAO {
   find(table: string) {
+    if (table === 'schedule') {
+      return schedule();
+    }
     const repository = connection.getRepository(table);
     return repository.find() as any;
   }
