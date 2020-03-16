@@ -87,6 +87,12 @@ class GenericDAO {
     return modify(table, tableModification);
   }
 
+  async getUser(username: string, password: string) {
+    const repository = connection.getRepository('user2');
+    const user = await repository.find({ where: { username, password } });
+    return user[0];
+  }
+
 }
 
 let genericDao = new GenericDAO();

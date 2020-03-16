@@ -1,11 +1,12 @@
 import express from 'express';
-import { genericDao } from './repository/Daos/GenericDao';
-import { initializeConnection } from './repository/ConnectionProvider';
 import cors from 'cors';
-
 import bodyParser = require('body-parser');
 import { Server } from 'http';
+import session from 'express-session';
+import path from 'path';
 
+import { genericDao } from './repository/Daos/GenericDao';
+import { initializeConnection } from './repository/ConnectionProvider';
 import { schedule } from './scheduler';
 import { getClientTypes } from './repository/client-types';
 
@@ -13,11 +14,44 @@ const app = express();
 const port = 3200;
 
 app.use(bodyParser.json());
-app.use(cors());
+
+
+const conObject = {
+  user: 'daniel',
+  password: 'daniel',
+  host: 'localhost',
+  port: 5432,
+  database: 'daniel'
+};
+
+app.use(session({
+  store: new (require('connect-pg-simple')(session))({ conObject }),
+  secret: 'secret',
+}));
+
+app.use(cors({
+  origin: ['http://localhost:4200'],
+  credentials: true
+}));
+
+app.post('/login', (req, res) => {
+  const user = genericDao.getUser(req.body.username, req.body.password);
+  user.then(u => {
+    res.send(u != undefined);
+    req.session.user = u;
+  });
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(res2 => res.send(true));
+});
+
+app.get('/isLoggedIn', (req, res) => {
+  res.send(req.session.user !== undefined);
+});
 
 app.post('/find', async (req, res) => {
   const data = await genericDao.find(req.body.table);
-  console.log(data);
   res.send(data);
 });
 
@@ -40,7 +74,6 @@ app.post('/insert', async (req, res) => {
     await genericDao.insert(req.body.table, req.body.entities);
     res.send({ success: true });
   } catch (e) {
-    console.log(e);
     res.send({ success: false })
   }
 });
@@ -58,13 +91,18 @@ app.post('/modify', async (req, res) => {
   genericDao.modify(req.body.table, req.body.modification).then(r => {
     res.send({ success: true });
   }).catch(e => {
-    console.log(e);
-    res.send({ success: false });``
+    res.send({ success: false }); ``
   });
 });
 
 app.post('/schedule', async (req, res) => {
   res.send(await schedule());
+});
+
+app.use(express.static(path.join(__dirname, 'dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 let server: Server;

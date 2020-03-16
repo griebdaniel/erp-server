@@ -6,7 +6,7 @@
   "password": "daniel",
   "database": "daniel",
   "entities": [
-    "dist/src/entity/**/*.js"
+    "src/entity/**/*.ts"
   ],
   "synchronize": true
 }
