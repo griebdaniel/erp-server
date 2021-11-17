@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, OneToMany, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, OneToMany, Column, ManyToOne, JoinColumn, Unique, PrimaryGeneratedColumn } from 'typeorm';
 
 import { PhaseSkill} from './PhaseSkill';
 import { PhaseTool } from './PhaseTool';
@@ -29,6 +29,7 @@ export class Phase {
   @OneToMany(type => PhaseNecessary, phaseNecessary => phaseNecessary.phase, { eager: true })
   necessary: PhaseNecessary[];
 
+  @PrimaryColumn()
   @ManyToOne(type => Product, { nullable: false, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'product' })
   product: string;

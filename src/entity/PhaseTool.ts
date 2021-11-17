@@ -5,10 +5,9 @@ import { Tool } from "./Tool";
 
 @Entity()
 export class PhaseTool {
-  @PrimaryColumn('string')
-  @ManyToOne(type => Phase, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'phase' })
-  phase: string;
+  @ManyToOne(type => Phase, { onUpdate: 'CASCADE', onDelete: 'CASCADE', primary: true })
+  @JoinColumn([{ name: 'phase', referencedColumnName: 'name' }, { name: 'product', referencedColumnName: 'product' }])
+  phase: Phase;
 
   @PrimaryColumn('string')
   @ManyToOne(type => Tool, { onDelete: "CASCADE", onUpdate: "CASCADE" })

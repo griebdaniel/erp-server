@@ -51,9 +51,23 @@ class GenericDAO {
     return repository.delete(entities);
   }
 
-  update(table: string, where: object, update: object) {
+  async update(table: string, where: object, update: object) {
     const repository = connection.getRepository(table);
-    return repository.update(where, update);
+
+    let whereIdsOnly;
+    let entity;
+    try {
+      whereIdsOnly = this.getIds(table, where);
+      entity = await repository.find(whereIdsOnly);
+      if (entity.length > 0) {
+        await repository.update(whereIdsOnly, update);
+      } else {
+        repository.save(Object.assign({}, where, update));
+      } 
+    } catch (e) {
+      console.log(e);
+    }
+
   }
 
   modify(table: string, tableModification: any): Promise<any> {
@@ -61,6 +75,7 @@ class GenericDAO {
     const repository = connection.getRepository(table);
 
     for (const relation of repository.metadata.oneToManyRelations) {
+     
       if (relation.propertyName === modification.column) {
         switch (modification.value.type) {
           case 'insert':
@@ -85,6 +100,28 @@ class GenericDAO {
     }
 
     return modify(table, tableModification);
+  }
+
+  getIds(table: string, entity: object) {
+    const entityIds = {};
+    const repository = connection.getRepository(table);
+
+    repository.metadata.primaryColumns.forEach(primaryColumn => {
+      entityIds[primaryColumn.propertyName] = entity[primaryColumn.propertyName];
+    })
+
+    return entityIds;
+  }
+
+  removeOneToManyFields(table: string, entity: object) {
+    const entityCopy = { ...entity };
+    const repository = connection.getRepository(table);
+
+    for (const relation of repository.metadata.oneToManyRelations) {
+      delete entityCopy[relation.propertyName];
+    }
+
+    return entityCopy;
   }
 
   async getUser(username: string, password: string) {

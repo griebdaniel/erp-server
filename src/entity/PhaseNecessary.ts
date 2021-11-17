@@ -5,10 +5,9 @@ import { Supply } from './Supply';
 
 @Entity()
 export class PhaseNecessary {
-  @PrimaryColumn('string')
-  @ManyToOne(type => Phase, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-  @JoinColumn({ name: 'phase' })
-  phase: string;
+  @ManyToOne(type => Phase, { onDelete: "CASCADE", onUpdate: "CASCADE", primary: true })
+  @JoinColumn([{ name: 'phase', referencedColumnName: 'name' }, { name: 'product', referencedColumnName: 'product' }])
+  phase: Phase;
 
   @PrimaryColumn('string')
   @ManyToOne(type => Supply, { onDelete: "CASCADE", onUpdate: "CASCADE" })

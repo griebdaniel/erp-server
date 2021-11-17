@@ -18,16 +18,16 @@ app.use(bodyParser.json());
 
 const conObject = {
   user: 'daniel',
-  password: 'daniel',
+  password: 'root',
   host: 'localhost',
   port: 5432,
-  database: 'daniel'
+  database: 'erp'
 };
 
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({ conObject }),
-  secret: 'secret',
-}));
+// app.use(session({
+//   store: new (require('connect-pg-simple')(session))({ conObject }),
+//   secret: 'secret',
+// }));
 
 app.use(cors({
   origin: ['http://localhost:4200'],
@@ -108,12 +108,12 @@ app.get('*', (req, res) => {
 let server: Server;
 
 const start = async (): Promise<void> => {
-  initializeConnection();
+  await initializeConnection();
 
   await new Promise((resolve, reject) => {
     server = app.listen(port, async () => {
       console.log(`App listening on port ${port}!`);
-      resolve();
+      resolve(true);
     });
   });
 }
@@ -123,7 +123,7 @@ const start = async (): Promise<void> => {
 const stop = async (): Promise<void> => {
   await new Promise((resolve, reject) => server.close(() => {
     console.log('App closed successfully');
-    resolve();
+    resolve(true);
   }));
 }
 

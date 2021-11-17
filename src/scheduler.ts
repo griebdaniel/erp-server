@@ -64,9 +64,10 @@ export const schedule = async (productOrders?: ProductOrder[]) => {
 
     for (const shift of shifts) {
       const scheduleForShift: ScheduleForShift = { shift: shift.name, schedule: [] };
-
-      const assignmentsBeforeBreak = getAssignments(phases, employees, tools, moment.duration(shift.start), moment.duration(shift.breakStart));
-      const assignmentsAfterBreak = getAssignments(phases, employees, tools, moment.duration(shift.breakEnd), moment.duration(shift.end));
+      
+      const assignmentsBeforeBreak = getAssignments(phases, employees.filter(employee => employee.shift === shift.name), tools, moment.duration(shift.start), moment.duration(shift.breakStart));
+      const assignmentsAfterBreak = getAssignments(phases, employees.filter(employee => employee.shift === shift.name), tools, moment.duration(shift.breakEnd), moment.duration(shift.end));
+      
 
       const scheduleForEmployee: ScheduleForEmployee[] = employees.map(employee => { return { employee: employee.name, schedule: [] } });
 
@@ -142,7 +143,7 @@ const getAssignments = (
         const timeAvailable = end.asSeconds() >= currentTime.clone().add(moment.duration(phase.time)).asSeconds();
         const toolAvailable = phase.tools.reduce<boolean>((available, tool) => available && tool.count > 0, true);
         const phaseAvailable = phase.phaseDependencies.reduce<boolean>(
-          (available, phaseDependency) => available && phases.find(phase => phase.name === phaseDependency.dependency).count > 0, true
+          (available, phaseDependency) => available && phases.find(phase => phase.name === phaseDependency.dependency.name).count > 0, true
         );
         const employeeAvailable = employees !== undefined;
 
@@ -150,7 +151,7 @@ const getAssignments = (
           activeAssignments.push({ phase: phase.name, time: currentTime, employees: employees.map(employee => employee.name) });
 
           lodash.pullAllWith(unassignedEmployees, employees, (a, b) => a.name === b.name);
-          phase.phaseDependencies.forEach(phaseDependency => phases.find(phase => phase.name === phaseDependency.dependency).count--);
+          phase.phaseDependencies.forEach(phaseDependency => phases.find(phase => phase.name === phaseDependency.dependency.name).count--);
           phase.tools.forEach(tool => tool.count--);
           phase.remaining--;
         } else {
